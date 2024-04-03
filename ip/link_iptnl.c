@@ -248,6 +248,8 @@ static int iptunnel_parse_opt(struct link_util *lu, int argc, char **argv,
 				encaptype = TUNNEL_ENCAP_FOU;
 			else if (strcmp(*argv, "gue") == 0)
 				encaptype = TUNNEL_ENCAP_GUE;
+			else if (strcmp(*argv, "psp") == 0)
+				encaptype = TUNNEL_ENCAP_PSP;
 			else if (strcmp(*argv, "none") == 0)
 				encaptype = TUNNEL_ENCAP_NONE;
 			else

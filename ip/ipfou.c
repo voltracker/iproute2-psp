@@ -53,6 +53,7 @@ static int fou_parse_opt(int argc, char **argv, struct nlmsghdr *n,
 	__u16 port, peer_port = 0;
 	__u8 family = preferred_family;
 	bool gue_set = false;
+	bool psp_set = false;
 	int ipproto_set = 0;
 	__u8 ipproto, type;
 	int port_set = 0;
@@ -82,6 +83,8 @@ static int fou_parse_opt(int argc, char **argv, struct nlmsghdr *n,
 			ipproto_set = 1;
 		} else if (!matches(*argv, "gue")) {
 			gue_set = true;
+		} else if (!matches(*argv, "psp")) {
+			psp_set = true;
 		} else if (!matches(*argv, "-6")) {
 			family = AF_INET6;
 		} else if (!matches(*argv, "local")) {
@@ -129,7 +132,7 @@ static int fou_parse_opt(int argc, char **argv, struct nlmsghdr *n,
 		return -1;
 	}
 
-	if (!ipproto_set && !gue_set && adding) {
+	if (!ipproto_set && !gue_set && adding && !psp_set) {
 		fprintf(stderr, "fou: must set ipproto or gue\n");
 		return -1;
 	}
@@ -145,6 +148,7 @@ static int fou_parse_opt(int argc, char **argv, struct nlmsghdr *n,
 	}
 
 	type = gue_set ? FOU_ENCAP_GUE : FOU_ENCAP_DIRECT;
+	type = psp_set ? FOU_ENCAP_PSP : type;
 
 	addattr16(n, 1024, FOU_ATTR_PORT, port);
 	addattr8(n, 1024, FOU_ATTR_TYPE, type);
